@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "Main",
+    "file_monitor",
+    "network_monitor",
+    "policy",
+    "system_monitor",
+    "communication",
+    "utils"
+, "gui"]
+
+

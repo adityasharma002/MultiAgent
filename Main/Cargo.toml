@@ -1,0 +1,14 @@
+[package]
+name = "main"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+file_monitor = { path = "../file_monitor" }
+network_monitor = { path = "../network_monitor" }
+system_monitor = { path = "../system_monitor" }
+policy = { path = "../policy" }
+communication = { path = "../communication" }
+utils = { path = "../utils" }
+tokio = { version = "1.0", features = ["full"] }

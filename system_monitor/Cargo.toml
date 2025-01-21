@@ -1,0 +1,8 @@
+[package]
+name = "system_monitor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sysinfo = "0.28"          # Cross-platform system monitoring
+procfs = { version = "0.14", optional = true } # Linux process monitoring
