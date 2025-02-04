@@ -1,0 +1,7 @@
+{
+  "device_id": "7",
+  "file_path": "C:\\Users\\Asus\\client\\file_monitor/tests\\text_sensitive.txt",
+  "pattern_type": "(?i)password.*=.*",
+  "matched_content": "Password=admin123\r",
+  "timestamp": "2025-02-04T03:16:19.629290100Z"
+}

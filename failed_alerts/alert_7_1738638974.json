@@ -1,0 +1,7 @@
+{
+  "device_id": "7",
+  "file_path": "C:\\Users\\Asus\\client\\file_monitor/tests\\text_sensitive.txt",
+  "pattern_type": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+  "matched_content": "123-45-6789",
+  "timestamp": "2025-02-04T03:16:14.552299700Z"
+}

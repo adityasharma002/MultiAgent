@@ -5,6 +5,9 @@ use std::error::Error;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RegistrationRequest {
+    pub name: String,
+    pub os: String,
+    pub features: Vec<String>,
     pub device_name: String,
     pub organization: String,
     pub environment: String,
@@ -16,9 +19,25 @@ pub struct RegistrationRequest {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RegistrationResponse {
-    pub device_id: String,
-    pub api_key: String,
+    pub message: String,
+    pub agent: AgentData
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct AgentData {
+    pub id: i32,
+    pub name: String,
+    pub os: String,
     pub status: String,
+    pub features: Vec<String>,
+    pub device_name: String,
+    pub organization: String,
+    pub environment: String,
+    pub location: String,
+    pub admin_email: String,
+    pub policy_group: String,
+    pub license_key: String,
+    pub last_seen: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -42,7 +61,8 @@ impl RegistrationService {
     }
 
     pub async fn register(&self, request: RegistrationRequest) -> Result<RegistrationResponse, Box<dyn Error + Send + Sync>> {
-        println!("Attempting registration with server...");
+        println!("Attempting registration with payload:");
+        println!("{}", serde_json::to_string_pretty(&request)?);
         
         let response = self.client
             .post(&self.api_endpoint)
@@ -50,11 +70,15 @@ impl RegistrationService {
             .send()
             .await?;
 
-        if !response.status().is_success() {
-            return Err(format!("Registration failed: {}", response.status()).into());
+        let status = response.status();
+        let response_text = response.text().await?;
+        println!("Raw API Response: {}", response_text);
+
+        if !status.is_success() {
+            return Err(format!("Registration failed: {} - {}", status, response_text).into());
         }
 
-        let reg_response: RegistrationResponse = response.json().await?;
+        let reg_response: RegistrationResponse = serde_json::from_str(&response_text)?;
         self.save_config(&request, &reg_response).await?;
         
         Ok(reg_response)
@@ -62,8 +86,8 @@ impl RegistrationService {
 
     async fn save_config(&self, request: &RegistrationRequest, response: &RegistrationResponse) -> Result<(), Box<dyn Error + Send + Sync>> {
         let config = AgentConfig {
-            device_id: response.device_id.clone(),
-            api_key: response.api_key.clone(),
+            device_id: response.agent.id.to_string(),
+            api_key: format!("agent_{}", response.agent.id), // Using id as api_key since it's not in response
             registration_data: request.clone(),
         };
 

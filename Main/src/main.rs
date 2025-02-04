@@ -1,11 +1,10 @@
 use communication::registration::{RegistrationService, RegistrationRequest, AgentConfig};
-use communication::Communication;
 use file_monitor::FileMonitor;
 use std::io::{self, Write};
 use std::path::Path;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>>  {
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     if !RegistrationService::is_registered() {
         println!("Agent needs to be registered. Starting registration process...");
         register_agent().await?;
@@ -16,9 +15,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>>  {
     Ok(())
 }
 
-async fn register_agent() -> Result<(), Box<dyn std::error::Error>> {
+async fn register_agent() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let registration_service = RegistrationService::new(
-        "https://your-api-endpoint.com/register".to_string()
+        "https://backend-security-solution.onrender.com/api/agents/register".to_string()
     );
     
     let request = get_registration_info()?;
@@ -26,9 +25,9 @@ async fn register_agent() -> Result<(), Box<dyn std::error::Error>> {
     match registration_service.register(request).await {
         Ok(response) => {
             println!("Registration successful!");
-            println!("Device ID: {}", response.device_id);
-            println!("API Key: {}", response.api_key);
-            println!("Status: {}", response.status);
+            println!("Agent ID: {}", response.agent.id);
+            println!("Status: {}", response.agent.status);
+            println!("Message: {}", response.message);
             Ok(())
         }
         Err(e) => {
@@ -38,8 +37,11 @@ async fn register_agent() -> Result<(), Box<dyn std::error::Error>> {
     }
 }
 
-fn get_registration_info() -> Result<RegistrationRequest, Box<dyn std::error::Error>> {
+fn get_registration_info() -> Result<RegistrationRequest, Box<dyn std::error::Error + Send + Sync>> {
     let mut request = RegistrationRequest {
+        name: "Test-agent".to_string(),
+        os: "Windows".to_string(),
+        features: vec!["DLP".to_string(), "EDR".to_string()],
         device_name: String::new(),
         organization: String::new(),
         environment: String::new(),
@@ -87,10 +89,10 @@ fn get_registration_info() -> Result<RegistrationRequest, Box<dyn std::error::Er
     Ok(request)
 }
 
-async fn start_monitors(config: &AgentConfig) -> Result<(), Box<dyn std::error::Error>> {
-    let comm = Communication::new(
+async fn start_monitors(config: &AgentConfig) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let comm = file_monitor::Communication::new(
         config.device_id.clone(),
-        "https://your-api-endpoint.com/alerts".to_string()
+        "https://backend-security-solution.onrender.com/api/alerts".to_string()
     );
     
     let file_monitor = FileMonitor::new(comm);
@@ -104,7 +106,6 @@ async fn start_monitors(config: &AgentConfig) -> Result<(), Box<dyn std::error::
 
     println!("File monitor started successfully.");
     
-    // Wait for monitors or shutdown signal
     tokio::select! {
         _ = file_monitor_handle => println!("File monitor stopped"),
         _ = tokio::signal::ctrl_c() => {

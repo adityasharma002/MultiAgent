@@ -1,0 +1,13 @@
+Employee Information
+------------------
+Email: test@company.com
+SSN: 123-45-6789
+Password=admin123
+API_KEY=1234abcd5678efgh
+Credit Card: 4111 1111 1111 1111
+
+Secret Information
+-----------------
+private_key=secretkey123
+Database Password=dbpass123
+Email: hr@company.com

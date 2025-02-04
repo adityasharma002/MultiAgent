@@ -1,0 +1,19 @@
+{
+  "device_id": "7",
+  "api_key": "agent_7",
+  "registration_data": {
+    "name": "Test-agent",
+    "os": "Windows",
+    "features": [
+      "DLP",
+      "EDR"
+    ],
+    "device_name": "Aditya",
+    "organization": "oasis",
+    "environment": "production",
+    "location": "Inida",
+    "admin_email": "ax@gmail.com",
+    "policy_group": "finance-dept",
+    "license_key": "Weroute-123-456-987"
+  }
+}

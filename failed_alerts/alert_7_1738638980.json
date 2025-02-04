@@ -1,0 +1,7 @@
+{
+  "device_id": "7",
+  "file_path": "C:\\Users\\Asus\\client\\file_monitor/tests\\text_sensitive.txt",
+  "pattern_type": "(?i)(api[_-]?key|secret[_-]?key).*=.*",
+  "matched_content": "API_KEY=1234abcd5678efgh\r",
+  "timestamp": "2025-02-04T03:16:20.307248500Z"
+}
